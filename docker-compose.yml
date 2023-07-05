@@ -1,10 +1,19 @@
-version: "3"
+version: '3'
 
 services:
-  app: 
-    build: .
-    command: npm start
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "3003:3003"
+      - '3333:3333'
+    depends_on:
+      - mongo
     volumes:
-      - .:/usr/app
+      - ./backend:/usr/app/backend
+      - ./frontend:/usr/app/frontend
+
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'

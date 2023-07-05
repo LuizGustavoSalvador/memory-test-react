@@ -10,8 +10,10 @@ RUN npm install
 
 COPY . .
 
+RUN cd frontend && npm run build
+
 #Define qual a porta o servidor vai expor pra máquina acessar
-EXPOSE 3003
+EXPOSE 3333
 
 #Define qual comando o servidor precisa rodar pra aplicação entrar no ar
 CMD ["npm", "start"]
