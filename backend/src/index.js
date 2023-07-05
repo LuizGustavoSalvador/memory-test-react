@@ -35,4 +35,6 @@ app.use((req, res) => {
   res.status(404).end(html);
 });
 
+connectDB();
+
 app.listen(PORT, HOST);
