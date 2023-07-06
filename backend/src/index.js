@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require("cors");
-// const connectDB = require('./src/db');
+const connectDB = require('./src/db');
 
 const user = require('./src/routes/user');
 
@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(user);
 
-// connectDB();
+connectDB();
 
 app.listen(PORT, HOST, () => {
   console.log(`Servidor rodando em ${HOST}:${PORT}`);

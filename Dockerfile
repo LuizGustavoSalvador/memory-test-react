@@ -5,19 +5,18 @@ FROM node:alpine
 WORKDIR /usr/app
 
 # Copia o package.json e package-lock.json para o diretório de trabalho
-COPY package*.json ./
-
-# Instala as dependências do projeto
-RUN npm install
+COPY backend/package*.json ./backend/
+RUN cd backend && npm install
 
 # Copia todo o código fonte para o diretório de trabalho
 COPY . .
 
-# Navega para a pasta do frontend e executa o build
-RUN cd frontend && npm run build
+# Navega para a pasta do backend e executa o build
+WORKDIR /usr/app/backend
+RUN npm run build
 
 # Define a porta que o servidor irá expor
 EXPOSE 3333
 
 # Comando para iniciar o servidor
-CMD ["npm", "start"]
+CMD ["node", "backend/src/index.js"]

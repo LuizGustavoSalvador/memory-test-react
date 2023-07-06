@@ -39,13 +39,93 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Rota de registro
-router.post('/register', (req, res) => {
-  // Lógica de registro de usuário
-  // ...
+router.post('/users', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
 
-  // Retorna a resposta para o cliente
-  res.json({ message: 'User registered successfully' });
+    // Verifica se o email já está em uso
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'O email fornecido já está em uso.' });
+    }
+
+    // Verifica se a senha possui no mínimo 4 caracteres
+    if (password.length < 4) {
+      return res.status(400).json({ message: 'A senha deve conter no mínimo 4 caracteres.' });
+    }
+
+    // Criptografa a senha em base64
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Cria um novo objeto de usuário
+    const newUser = new User({
+      name,
+      email,
+      password: encryptedPassword
+    });
+
+    // Salva o usuário no banco de dados
+    const savedUser = await newUser.save();
+
+    res.status(201).json(savedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao criar o usuário.' });
+  }
 });
+
+router.put('/users/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, email, password, newPassword, repeatPassword } = req.body;
+
+    // Verifica se o usuário existe
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    // Atualiza o nome e email do usuário
+    existingUser.name = name;
+    existingUser.email = email;
+
+    // Verifica se a nova senha foi informada
+    if (newPassword) {
+      // Verifica se a senha atual está correta
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: 'A senha atual informada está incorreta.' });
+      }
+
+      // Verifica se a nova senha é igual à antiga senha
+      if (newPassword === password) {
+        return res.status(400).json({ message: 'A nova senha não pode ser igual à senha atual.' });
+      }
+
+      // Verifica se a nova senha possui no mínimo 4 caracteres
+      if (newPassword.length < 4) {
+        return res.status(400).json({ message: 'A nova senha deve conter no mínimo 4 caracteres.' });
+      }
+
+      // Verifica se a nova senha e a repetição da senha são iguais
+      if (newPassword !== repeatPassword) {
+        return res.status(400).json({ message: 'A nova senha e a repetição da senha não coincidem.' });
+      }
+
+      // Criptografa a nova senha em base64
+      const encryptedPassword = await bcrypt.hash(newPassword, 10);
+      existingUser.password = encryptedPassword;
+    }
+
+    // Salva as alterações no usuário
+    const updatedUser = await existingUser.save();
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao editar o usuário.' });
+  }
+});
+
 
 module.exports = router;
