@@ -6,7 +6,7 @@
 ###############
 ##  BACKEND  ##
 ###############
-/backend/node_modules
+#/backend/node_modules
 
 ################
 ##  FRONTEND  ##
