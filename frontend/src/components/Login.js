@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,8 +17,8 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/login', { email, password });
-      const { token } = response.data;
+      //const response = await axios.post('/api/login', { email, password });
+     // const { token } = response.data;
       // Armazene o token no localStorage ou em outro local de sua preferência
       // ...
       console.log('Login successful');
@@ -33,7 +34,7 @@ const Login = () => {
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <form class="form" onSubmit={handleLogin}>
         <div>
           <label htmlFor="email">Email:</label>
           <input
