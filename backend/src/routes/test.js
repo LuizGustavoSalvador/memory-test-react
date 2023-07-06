@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const Option = require('../models/option');
-const Question = require('../models/question');
-const Result = require('../models/result');
-const ResultDetail = require('../models/resultDetail');
-const Test = require('../models/test');
-const User = require('../models/user');
+const Option = require('../models/Option');
+const Question = require('../models/Question');
+const Result = require('../models/Result');
+const ResultDetail = require('../models/ResultDetail');
+const Test = require('../models/Test');
+const User = require('../models/User');
 
 router.get('/tests', async (req, res) => {
   try {

@@ -4,9 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: app
+    command: sh -c "cd backend/ && npm run start"
     ports:
       - '3333:3333'
+      - '3334:3334'
     depends_on:
       - database
     volumes:

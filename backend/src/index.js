@@ -12,12 +12,11 @@ const app = express();
 app.use(cors());
 app.use(user);
 app.use(test);
+app.use(express.static('frontend'));
 
-connectDB().then(() => {
+connectDB();
+
   app.listen(PORT, HOST, () => {
     console.log(`Servidor rodando em ${HOST}:${PORT}`);
   });
-}).catch(error => {
-  console.error('Erro ao conectar ao banco de dados:', error);
-});
 

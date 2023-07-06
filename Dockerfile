@@ -12,11 +12,11 @@ RUN cd backend && npm install
 COPY . .
 
 # Navega para a pasta do backend e executa o build
-WORKDIR /usr/app/backend
-RUN npm run build
+#WORKDIR /usr/app/backend
+#RUN npm run build
 
 # Define a porta que o servidor irá expor
-EXPOSE 3333
+EXPOSE 3333 3334
 
 # Comando para iniciar o servidor
-CMD ["node", "backend/src/index.js"]
+#CMD ["node", "backend/src/index.js"]
