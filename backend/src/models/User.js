@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.methods.checkPassword = function (password) {
+  const hashedPassword = Buffer.from(this.password, 'base64').toString('ascii');
+  return bcrypt.compare(password, hashedPassword);
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

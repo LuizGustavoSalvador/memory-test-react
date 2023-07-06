@@ -1,19 +1,23 @@
-# identifica qual versão da máquina vai ser utilizado (alpine é uma versão bem reduzida quase sem funcionalidade do SO além do node sendo bem mais leve)
-FROM node:alpine 
+# Define a versão do Node.js Alpine que será utilizada
+FROM node:alpine
 
-#define qual diretório da máquina vai ser trabalhado
-WORKDIR usr/app
+# Define o diretório de trabalho dentro do contêiner
+WORKDIR /usr/app
 
-#Copia os packeges pra dentro da máquina
+# Copia o package.json e package-lock.json para o diretório de trabalho
 COPY package*.json ./
+
+# Instala as dependências do projeto
 RUN npm install
 
+# Copia todo o código fonte para o diretório de trabalho
 COPY . .
 
+# Navega para a pasta do frontend e executa o build
 RUN cd frontend && npm run build
 
-#Define qual a porta o servidor vai expor pra máquina acessar
+# Define a porta que o servidor irá expor
 EXPOSE 3333
 
-#Define qual comando o servidor precisa rodar pra aplicação entrar no ar
+# Comando para iniciar o servidor
 CMD ["npm", "start"]
