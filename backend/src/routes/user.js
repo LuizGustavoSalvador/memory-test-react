@@ -6,8 +6,9 @@ const User = require('../models/User');
 
 router.use(cors());
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+router.post('/login', async (req, res) => {  
+  const email = req.email;
+  const password = req.password;
 
   try {
     const user = await User.findOne({ email });
@@ -56,7 +57,7 @@ router.post('/logout', async (req, res) => {
   }
 });
 
-router.post('/users', async (req, res) => {
+router.post('/user', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -91,7 +92,7 @@ router.post('/users', async (req, res) => {
   }
 });
 
-router.put('/users/:userId', async (req, res) => {
+router.put('/user/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     const { name, email, newPassword, repeatPassword } = req.body;

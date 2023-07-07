@@ -1,24 +1,29 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import http from '../../modules/http';
 
-const User = () => {
+const UpdateUser = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
+  const [userId, setUserId] = useState(''); // Definindo a variável userId
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('/api/user');
-        const { name, email } = response.data;
+        const token = localStorage.getItem('token');
+        const response = await http.get('/api/user', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const { name, email, _id } = response.data;
 
         setName(name);
         setEmail(email);
+        setUserId(_id); // Atribuindo o valor do _id à variável userId
       } catch (error) {
         console.error(error);
       }
@@ -27,31 +32,34 @@ const User = () => {
     fetchUserData();
   }, []);
 
-  const handleNameChange = e => {
+  const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
-  const handleEmailChange = e => {
+  const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handleNewPasswordChange = e => {
+  const handleNewPasswordChange = (e) => {
     setNewPassword(e.target.value);
   };
 
-  const handleRepeatPasswordChange = e => {
+  const handleRepeatPasswordChange = (e) => {
     setRepeatPassword(e.target.value);
   };
 
-  const handleUser = async e => {
+  const handleUser = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.put(`/api/users/${userId}`, {
+      const token = localStorage.getItem('token');
+      await http.put(`/api/users/${userId}`, {
         name,
         email,
         newPassword,
-        repeatPassword
+        repeatPassword,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       toast.success('Usuário atualizado com sucesso!');
@@ -68,14 +76,15 @@ const User = () => {
 
   return (
     <div className="edit-user-container">
-      <h2>Editar Usuário</h2>
-      <form className="form" onSubmit={handleUser}>
+      <h1 className='page-title'>Editar Usuário</h1>
+      <form className="form-default" onSubmit={handleUser}>
         <div>
           <label htmlFor="name">Nome:</label>
           <input
             type="text"
             id="name"
             value={name}
+            placeholder='Nome'
             required
             onChange={handleNameChange}
           />
@@ -86,6 +95,7 @@ const User = () => {
             type="email"
             id="email"
             value={email}
+            placeholder='Email'
             required
             onChange={handleEmailChange}
           />
@@ -96,6 +106,7 @@ const User = () => {
             type="password"
             id="newPassword"
             value={newPassword}
+            placeholder='Nova senha'
             onChange={handleNewPasswordChange}
           />
         </div>
@@ -105,14 +116,15 @@ const User = () => {
             type="password"
             id="repeatPassword"
             value={repeatPassword}
+            placeholder='Repetir senha'
             onChange={handleRepeatPasswordChange}
           />
         </div>
-        <button type="submit">Salvar Alterações</button>
+        <button className='btn-default' type="submit">Salvar Alterações</button>
       </form>
       <ToastContainer />
     </div>
   );
 };
 
-export default User;
+export default UpdateUser;

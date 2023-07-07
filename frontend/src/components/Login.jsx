@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import http from '../../modules/http';
 
 
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/login', { email, password });
+      const response = await http.post('/login', { email, password });
       const { token } = response.data;
       localStorage.setItem('token', token);
 
@@ -29,7 +29,7 @@ const Login = () => {
 
       setTimeout(() => {
         navigate('/test');
-      }, 2000);
+      }, 1000);
     } catch (error) {
       toast.error("Aconteceu um erro interno, por favor tente mais tarde");
       console.error(error);
@@ -46,6 +46,7 @@ const Login = () => {
             type="email"
             id="email"
             value={email}
+            placeholder='E-mail'
             required
             onChange={handleEmailChange}
           />
@@ -56,6 +57,7 @@ const Login = () => {
             type="password"
             id="password"
             value={password}
+            placeholder='Senha'
             required
             onChange={handlePasswordChange}
           />

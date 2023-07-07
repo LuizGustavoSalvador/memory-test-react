@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import http from '../../modules/http';
 
 const ResultPage = () => {
   const [results, setResults] = useState([]);
@@ -8,7 +8,7 @@ const ResultPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await axios.get('/results');
+        const response = await http.get('/results');
         const data = response.data;
         setResults(data);
       } catch (error) {
@@ -20,7 +20,7 @@ const ResultPage = () => {
   }, []);
 
   return (
-    <div className="result-list-component">
+    <div className="container result-list-component">
       <h1 className="page-title">Lista de resultados</h1>
       <div className="list">
         {results.length === 0 ? (

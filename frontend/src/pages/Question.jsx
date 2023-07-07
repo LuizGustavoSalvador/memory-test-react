@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-import { ToastContainer, toast, } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import http from '../../modules/http';
 
 const QuestionPage = () => {
   const navigate = useNavigate();
   const { idteste } = useParams();
   const [questions, setQuestions] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
+  const [answers, setAnswers] = useState([]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await axios.get(`/questions/${idteste}`);
+        const response = await http.get(`/questions/${idteste}`);
         setQuestions(response.data);
       } catch (error) {
         console.error(error);
@@ -40,7 +41,13 @@ const QuestionPage = () => {
         <div className="options-list">
           {question.options.map((option) => (
             <div className="option" key={option._id}>
-              <input className="radio" type="radio" name={`optionQuestion-${question._id}`} value={option.value} />
+              <input
+                className="radio"
+                type="radio"
+                name={`optionQuestion-${question._id}`}
+                value={option.value}
+                onChange={(e) => handleAnswerChange(question.idQuestion, e.target.value)}
+              />
               <label htmlFor={`optionQuestion-${question._id}`}>{option.text}</label>
             </div>
           ))}
@@ -61,9 +68,25 @@ const QuestionPage = () => {
     }
   };
 
+  const handleAnswerChange = (questionId, value) => {
+    const updatedAnswers = [...answers];
+    const existingAnswerIndex = updatedAnswers.findIndex((answer) => answer.id_question === questionId);
+
+    if (existingAnswerIndex !== -1) {
+      updatedAnswers[existingAnswerIndex].selectedOption = value;
+    } else {
+      updatedAnswers.push({
+        id_question: questionId,
+        selectedOption: value,
+      });
+    }
+
+    setAnswers(updatedAnswers);
+  };
+
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('/attempt', {
+      const response = await http.post('/attempt', {
         testId: idteste,
         userId: 'your_user_id', // Substitua pelo ID do usuário logado
         answers,
@@ -82,8 +105,8 @@ const QuestionPage = () => {
   };
 
   return (
-    <div className="perform-test-component">
-      <h1 className="title-page">Teste: {idteste}</h1>
+    <div className="container perform-test-component">
+      <h1 className='page-title'>Teste: {idteste}</h1>
       <form method="POST" id="performTestForm" className="form-default">
         <input type="hidden" id="testId" name="test_id" value={idteste} />
         {renderStep()}

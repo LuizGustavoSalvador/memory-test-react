@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import http from '../../modules/http';
 
 const Header = () => {
   const navigate = useNavigate();
   const [showSubMenu, setShowSubMenu] = useState(false);
 
   const handleLogout = () => {
-    axios
-      .post('/logout', {}, { withCredentials: true })
+    http.post('/logout', {}, { withCredentials: true })
       .then(response => {
         if (response.status === 200) {
           toast.success('Até logo!');
@@ -48,31 +47,31 @@ const Header = () => {
               </Link>
             </li>
             {!isLoggedIn && (
-            <li className="menu-item user-link">
-              <Link to="/user" className="link-menu">
-                Cadastrar Usuário
-              </Link>
-            </li>
+              <li className="menu-item user-link">
+                <Link to="/user" className="link-menu">
+                  Cadastrar Usuário
+                </Link>
+              </li>
             )}
-                {isLoggedIn && (
-            <li className="menu-item" onClick={toggleSubMenu}>
-              <span className="link-menu">Configurações</span>
-              {showSubMenu && (
-                <ul className="submenu">
-                  <li className="submenu-item">
-                    <Link to="/edit-user" className="link-menu">
-                      Editar Usuário
-                    </Link>
-                  </li>
-                  <li className="submenu-item">
-                    <button className="link-menu" onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              )}
-            </li>
-          )}
+            {isLoggedIn && (
+              <li className="menu-item" onClick={toggleSubMenu}>
+                <span className="link-menu">Configurações</span>
+                {showSubMenu && (
+                  <ul className="submenu">
+                    <li className="submenu-item">
+                      <Link to="/user" className="link-menu">
+                        Editar Usuário
+                      </Link>
+                    </li>
+                    <li className="submenu-item">
+                      <button className="link-menu" onClick={handleLogout}>
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </li>
+            )}
           </ul>
         </div>
       </div>

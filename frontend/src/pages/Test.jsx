@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'
 import { ToastContainer, toast, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import http from '../../modules/http';
 
 const TestPage = () => {
   const [tests, setTests] = useState([]);
@@ -17,8 +17,8 @@ const TestPage = () => {
 
     const fetchTests = async () => {
       try {
-        const response = await fetch('/api/tests');
-        const data = await response.json();
+        const response = await http.get('/api/tests');
+        const data = response.data;
         setTests(data);
       } catch (error) {
         console.error(error);
@@ -30,7 +30,7 @@ const TestPage = () => {
 
   const handleDeleteTest = async (testId) => {
     try {
-      const response = await axios.delete(`/api/tests/${testId}`, {
+      const response = await http.delete(`/api/tests/${testId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -49,8 +49,8 @@ const TestPage = () => {
   };
 
   return (
-    <div className="test-component">
-      <h1 className="title-page">Teste</h1>
+    <div className="container test-component">
+     <h1 className='page-title'>Teste</h1>
       <form id="testRegisterForm" className="form-default">
         <div>
           <label htmlFor="name">Nome:</label>

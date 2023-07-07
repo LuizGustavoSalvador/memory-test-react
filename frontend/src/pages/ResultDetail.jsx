@@ -1,5 +1,5 @@
 // ResultDetailPage.js
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const ResultDetailPage = ({ match }) => {
@@ -10,7 +10,7 @@ const ResultDetailPage = ({ match }) => {
   useEffect(() => {
     const fetchResultDetails = async () => {
       try {
-        const response = await axios.get(`/results/${idResult}/details/${idDetail}`);
+        const response = await http.get(`/results/${idResult}/details/${idDetail}`);
         const data = response.data;
         setResultDetails(data);
         setTestName(data.test);
@@ -23,8 +23,8 @@ const ResultDetailPage = ({ match }) => {
   }, [idResult, idDetail]);
 
   return (
-    <div className="result-details-component">
-      <h2 className="page-title">Detalhes do teste: {testName}</h2>
+    <div className="container result-details-component">
+      <h1 className='page-title'>Detalhes do teste: {testName}</h1>
 
       <div className="details">
         <div className="details-header">
