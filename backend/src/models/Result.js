@@ -30,4 +30,8 @@ const resultSchema = new mongoose.Schema({
 
 const Result = mongoose.model('Result', resultSchema);
 
+Result.createCollection().then(() => {
+  console.log('model criado');
+});
+
 module.exports = Result;

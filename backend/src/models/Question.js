@@ -18,4 +18,8 @@ const questionSchema = new mongoose.Schema({
 
 const Question = mongoose.model('Question', questionSchema);
 
+Question.createCollection().then(() => {
+  console.log('model criado');
+});
+
 module.exports = Question;

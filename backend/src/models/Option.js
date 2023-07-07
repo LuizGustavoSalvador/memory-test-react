@@ -18,4 +18,8 @@ const optionSchema = new mongoose.Schema({
 
 const Option = mongoose.model('Option', optionSchema);
 
+Option.createCollection().then(() => {
+  console.log('model criado');
+});
+
 module.exports = Option;

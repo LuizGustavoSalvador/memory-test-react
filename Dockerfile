@@ -12,5 +12,5 @@ RUN cd backend && npm install
 COPY . .
 
 # Define a porta que o servidor irá expor
-EXPOSE 3333 3334
+EXPOSE 3333
 

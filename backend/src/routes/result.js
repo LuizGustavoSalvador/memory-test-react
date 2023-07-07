@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Result = require('../models/result');
-const ResultDetail = require('../models/resultDetail');
+const Result = require('../models/Result');
+const ResultDetail = require('../models/ResultDetail');
 
 router.get('/results', async (req, res) => {
   try {

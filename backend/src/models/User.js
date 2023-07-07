@@ -34,4 +34,8 @@ userSchema.methods.checkPassword = function (password) {
 
 const User = mongoose.model('User', userSchema);
 
+User.createCollection().then(() => {
+  console.log('model criado');
+});
+
 module.exports = User;

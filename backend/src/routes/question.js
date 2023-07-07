@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const Option = require('../models/option');
-const Question = require('../models/question');
-const Test = require('../models/test');
+const Option = require('../models/Option');
+const Question = require('../models/Question');
+const Test = require('../models/Test');
 
 router.post('/questions', async (req, res) => {
   try {

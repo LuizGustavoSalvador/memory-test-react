@@ -29,4 +29,9 @@ const resultDetailSchema = new mongoose.Schema({
 
 const ResultDetail = mongoose.model('ResultDetail', resultDetailSchema);
 
+ResultDetail.createCollection().then(() => {
+  console.log('model criado');
+});
+
+
 module.exports = ResultDetail;

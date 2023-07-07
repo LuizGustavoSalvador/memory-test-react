@@ -36,4 +36,8 @@ const testSchema = new mongoose.Schema({
 
 const Test = mongoose.model('Test', testSchema);
 
+Test.createCollection().then(() => {
+  console.log('model criado');
+});
+
 module.exports = Test;
