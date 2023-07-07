@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -26,11 +27,6 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
-userSchema.methods.checkPassword = function (password) {
-  const hashedPassword = Buffer.from(this.password, 'base64').toString('ascii');
-  return bcrypt.compare(password, hashedPassword);
-};
 
 const User = mongoose.model('User', userSchema);
 

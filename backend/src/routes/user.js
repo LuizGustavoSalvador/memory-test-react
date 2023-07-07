@@ -7,8 +7,7 @@ const User = require('../models/User');
 router.use(cors());
 
 router.post('/login', async (req, res) => {  
-  const email = req.email;
-  const password = req.password;
+  const {email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -16,8 +15,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Email inválido' });
     }
 
-    const isPasswordValid = await user.checkPassword(password);
-    if (!isPasswordValid) {
+    if (user.password != password) {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
 
@@ -26,7 +24,7 @@ router.post('/login', async (req, res) => {
       role: 'user',
     };
 
-    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign(payload, 'minhaKeyBemGrandeGigante', { expiresIn: '1h' });
 
     user.token = token;
     await user.save();
@@ -72,14 +70,11 @@ router.post('/user', async (req, res) => {
       return res.status(400).json({ message: 'A senha deve conter no mínimo 4 caracteres.' });
     }
 
-    // Criptografa a senha em base64
-    const encryptedPassword = await bcrypt.hash(password, 10);
-
     // Cria um novo objeto de usuário
     const newUser = new User({
       name,
       email,
-      password: encryptedPassword
+      password: password
     });
 
     // Salva o usuário no banco de dados
@@ -139,5 +134,20 @@ router.put('/user/:userId', async (req, res) => {
   }
 });
 
+router.get('/user', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    const user = await User.findOne({ token: token });
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Ocorreu um erro interno, tente mais tarde.' });
+  }
+});
 
 module.exports = router;

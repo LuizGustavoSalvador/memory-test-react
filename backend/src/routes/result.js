@@ -6,9 +6,9 @@ const ResultDetail = require('../models/ResultDetail');
 
 router.get('/results', async (req, res) => {
   try {
-    const userId = req.user.id; // Obtém o ID do usuário do token
+    const userId = req.user.id;
 
-    const results = await Result.find({ id_user: userId }); // Filtra os resultados pelo ID do usuário
+    const results = await Result.find({ id_user: userId });
 
     const resultData = await Promise.all(
       results.map(async (result) => {

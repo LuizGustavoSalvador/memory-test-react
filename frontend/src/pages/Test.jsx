@@ -17,7 +17,7 @@ const TestPage = () => {
 
     const fetchTests = async () => {
       try {
-        const response = await http.get('/api/tests');
+        const response = await http.get('/tests');
         const data = response.data;
         setTests(data);
       } catch (error) {
@@ -30,7 +30,7 @@ const TestPage = () => {
 
   const handleDeleteTest = async (testId) => {
     try {
-      const response = await http.delete(`/api/tests/${testId}`, {
+      const response = await http.delete(`/tests/${testId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

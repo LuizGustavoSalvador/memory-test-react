@@ -16,14 +16,14 @@ const UpdateUser = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await http.get('/api/user', {
+        const response = await http.get(`user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const { name, email, _id } = response.data;
 
         setName(name);
         setEmail(email);
-        setUserId(_id); // Atribuindo o valor do _id à variável userId
+        setUserId(_id);
       } catch (error) {
         console.error(error);
       }
@@ -53,7 +53,7 @@ const UpdateUser = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await http.put(`/api/users/${userId}`, {
+      await http.put(`/users/${userId}`, {
         name,
         email,
         newPassword,
