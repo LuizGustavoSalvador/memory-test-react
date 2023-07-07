@@ -44,7 +44,7 @@ const TestPage = () => {
         toast.error('Ocorreu um erro ao remover o teste');
       }
     } catch (error) {
-      console.error(error);
+      toast.error('Ocorreu um erro ao remover o teste');
     }
   };
 

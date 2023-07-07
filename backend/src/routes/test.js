@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 const Option = require('../models/Option');
 const Question = require('../models/Question');
@@ -14,7 +15,7 @@ router.get('/tests', async (req, res) => {
 
     const testsWithUserNames = await Promise.all(
       tests.map(async test => {
-        const createdBy = await User.findById(test.created_by);
+        const createdBy = await User.findById(mongoose.Types.ObjectId(test.created_by));
         return {
           _id: test._id,
           name: test.name,
