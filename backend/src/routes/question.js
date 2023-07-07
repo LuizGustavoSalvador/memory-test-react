@@ -136,22 +136,24 @@ router.delete('/questions/:id', async (req, res) => {
   }
 });
 
-router.get('/questions', async (req, res) => {
+router.get('/questions/:idteste', async (req, res) => {
   try {
-    const questions = await Question.find().populate('options', 'text value');
-    const tests = await Test.find();
+    const idTeste = req.params.idteste;
+    const questions = await Question.find({ id_test: idTeste }).populate('options', 'text value');
+    const test = await Test.findById(idTeste);
 
-    const questionData = questions.map(question => {
-      const test = tests.find(test => test._id.toString() === question.id_test.toString());
-      return {
-        _id: question._id,
-        question: question.question,
-        options: question.options,
-        max_options: test.max_options,
-        qtd_questions: test.qtd_questions,
-        testSlug: test.slug
-      };
-    });
+    if (!test) {
+      return res.status(404).json({ message: 'Teste não encontrado.' });
+    }
+
+    const questionData = questions.map((question) => ({
+      _id: question._id,
+      question: question.question,
+      options: question.options,
+      max_options: test.max_options,
+      qtd_questions: test.qtd_questions,
+      testSlug: test.slug,
+    }));
 
     res.json(questionData);
   } catch (error) {

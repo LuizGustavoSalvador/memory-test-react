@@ -1,6 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'
+import { ToastContainer, toast, } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TestPage = () => {
+  const [tests, setTests] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      navigate('/login');
+    }
+
+    const fetchTests = async () => {
+      try {
+        const response = await fetch('/api/tests');
+        const data = await response.json();
+        setTests(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTests();
+  }, [navigate]);
+
+  const handleDeleteTest = async (testId) => {
+    try {
+      const response = await axios.delete(`/api/tests/${testId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const updatedTests = tests.filter((test) => test._id !== testId);
+        setTests(updatedTests);
+        toast.success('Teste removido');
+      } else {
+        toast.error('Ocorreu um erro ao remover o teste');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="test-component">
       <h1 className="title-page">Teste</h1>
@@ -43,8 +90,27 @@ const TestPage = () => {
       </form>
       <div className="list-test-wrapper">
         <h2 className="page-subtitle">Lista de testes</h2>
-        {/* Renderizar a lista de testes aqui */}
+        {tests.length === 0 ? (
+          <h3 className="no-tests">Nenhum teste cadastrado</h3>
+        ) : (
+          tests.map((test) => (
+            <div className="test" key={test._id}>
+              <h3>{test.name}</h3>
+              <p>
+                Número de questões: {test.registeredQuestions}/{test.num_questions}
+              </p>
+              <p>Quantidade máxima de alternativas por questão: {test.max_options}</p>
+              <div className="actions">
+                {/* Adicionar links para as ações (adicionar pergunta e iniciar teste) */}
+                <Link to={`/add-question/${test._id}`}>Adicionar Pergunta</Link>
+                <Link to={`/start-test/${test._id}`}>Iniciar Teste</Link>
+                <button onClick={() => handleDeleteTest(test._id)}>Excluir Teste</button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

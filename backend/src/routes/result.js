@@ -6,19 +6,29 @@ const ResultDetail = require('../models/resultDetail');
 
 router.get('/results', async (req, res) => {
   try {
-    const results = await Result.find();
-    res.json(results);
+    const userId = req.user.id; // Obtém o ID do usuário do token
+
+    const results = await Result.find({ id_user: userId }); // Filtra os resultados pelo ID do usuário
+
+    const resultData = await Promise.all(
+      results.map(async (result) => {
+        const details = await ResultDetail.find({ id_result: result._id });
+        return { ...result.toObject(), details };
+      })
+    );
+
+    res.json(resultData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro ao listar os resultados.' });
   }
 });
 
-router.get('/results/:resultId/details', async (req, res) => {
+router.get('/results/:idResult/details/:idDetail', async (req, res) => {
   try {
-    const { resultId } = req.params;
+    const { idResult, idDetail } = req.params;
 
-    const details = await ResultDetail.find({ id_result: resultId });
+    const details = await ResultDetail.find({ id_result: idResult, _id: idDetail });
     res.json(details);
   } catch (error) {
     console.error(error);

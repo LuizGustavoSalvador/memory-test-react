@@ -6,12 +6,10 @@ const User = require('../models/User');
 
 router.use(cors());
 
-// Rota de login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Busca o usuário pelo email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ error: 'Email inválido' });
@@ -22,17 +20,36 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
 
-    // Cria o payload do token com os dados do usuário
     const payload = {
       email: user.email,
       role: 'user',
     };
 
-    // Gera o token de acesso com a chave secreta
     const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
 
-    // Retorna o token de acesso para o cliente
+    user.token = token;
+    await user.save();
+
     res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Ocorreu um erro interno, tente mais tarde.' });
+  }
+});
+
+router.post('/logout', async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    user.token = undefined;
+    await user.save();
+
+    res.json({ message: 'Logout realizado com sucesso' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Ocorreu um erro interno, tente mais tarde.' });
@@ -77,7 +94,7 @@ router.post('/users', async (req, res) => {
 router.put('/users/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, email, password, newPassword, repeatPassword } = req.body;
+    const { name, email, newPassword, repeatPassword } = req.body;
 
     // Verifica se o usuário existe
     const existingUser = await User.findById(userId);
@@ -91,14 +108,8 @@ router.put('/users/:userId', async (req, res) => {
 
     // Verifica se a nova senha foi informada
     if (newPassword) {
-      // Verifica se a senha atual está correta
-      const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: 'A senha atual informada está incorreta.' });
-      }
-
       // Verifica se a nova senha é igual à antiga senha
-      if (newPassword === password) {
+      if (newPassword === existingUser.password) {
         return res.status(400).json({ message: 'A nova senha não pode ser igual à senha atual.' });
       }
 
