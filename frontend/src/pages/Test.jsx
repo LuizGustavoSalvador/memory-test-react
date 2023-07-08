@@ -48,6 +48,34 @@ const TestPage = () => {
     }
   };
 
+  const handleCreateTest = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const name = form.name.value;
+    const numQuestions = form.numQuestions.value;
+    const maxOptions = form.maxOptions.value;
+
+    try {
+      const response = await http.post('/tests', {
+        name,
+        numQuestions,
+        maxOptions
+      });
+
+      if (response.status === 201) {
+        const createdTest = response.data;
+        setTests([...tests, createdTest]);
+        toast.success('Teste criado com sucesso');
+        form.reset();
+      } else {
+        toast.error('Ocorreu um erro ao criar o teste');
+      }
+    } catch (error) {
+      toast.error('Ocorreu um erro ao criar o teste');
+    }
+  };
+
   return (
     <div className="container test-component">
      <h1 className='page-title'>Teste</h1>
@@ -83,7 +111,7 @@ const TestPage = () => {
           />
         </div>
         <div className="button">
-          <button className="btn-default" id="sendButton" type="button">
+          <button className="btn-default" id="sendButton" type="button" onClick={handleCreateTest}>
             Criar teste
           </button>
         </div>

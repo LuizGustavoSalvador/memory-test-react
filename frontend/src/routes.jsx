@@ -8,7 +8,7 @@ const RoutesList = () => {
   return (
     <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/tests" element={<TestPage />} />
+        <Route path="/test" element={<TestPage />} />
         <Route path="/results" element={<ResultPage />} />
         <Route path="/user" element={<UserPage />} />
     {/* Adicione outras rotas conforme necessário */}
